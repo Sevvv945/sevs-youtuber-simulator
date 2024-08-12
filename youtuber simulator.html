@@ -1,0 +1,647 @@
+﻿<head><base href="https://www.youtubesim.com/">
+<title>YouTuber Simulator - The Grind to Viral</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    color: #333;
+  }
+  #app {
+    max-width: 1000px;
+    margin: 0 auto;
+    background-color: white;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 30px;
+  }
+  h1 {
+    color: #ff0000;
+    text-align: center;
+    font-size: 2.5em;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+  }
+  #upload-section, #stats-section, #profile-section, #monetization-section {
+    margin-bottom: 30px;
+    background-color: #f5f5f5;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  input, button {
+    margin: 10px 0;
+    padding: 12px;
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 1em;
+  }
+  button {
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+    font-weight: bold;
+  }
+  button:hover {
+    background-color: #cc0000;
+    transform: translateY(-2px);
+  }
+  button:active {
+    transform: translateY(0);
+  }
+  button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  #video-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  .video-item {
+    background-color: #fff;
+    margin: 15px 0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .video-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+  .video-title {
+    font-weight: bold;
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    color: #1a1a1a;
+  }
+  .video-stats {
+    color: #666;
+    font-size: 0.9em;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .progress-bar {
+    background-color: #e0e0e0;
+    height: 6px;
+    width: 100%;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress {
+    background-color: #ff0000;
+    height: 100%;
+    width: 0%;
+    transition: width 0.5s ease-in-out;
+  }
+  .new-video {
+    animation: highlight 2s ease-out;
+  }
+  @keyframes highlight {
+    0% { transform: translateY(-20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  #stats-section {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    text-align: center;
+    flex-wrap: wrap;
+  }
+  .stat-item {
+    flex: 1;
+    min-width: 120px;
+    margin: 10px;
+  }
+  .stat-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #ff0000;
+  }
+  .stat-label {
+    font-size: 0.9em;
+    color: #666;
+  }
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+  }
+  .modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  }
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .modal-title {
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    color: #ff0000;
+  }
+  .modal-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  .modal-stat {
+    text-align: center;
+  }
+  .modal-stat-value {
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+  }
+  .modal-stat-label {
+    font-size: 0.9em;
+    color: #666;
+  }
+  .comment-section {
+    max-height: 200px;
+    overflow-y: auto;
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+  }
+  .comment {
+    background-color: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+  }
+  .comment.hate {
+    background-color: #fff0f0;
+    border-left: 3px solid #ff0000;
+  }
+  #video-preview {
+    width: 100%;
+    max-width: 640px;
+    margin: 20px auto;
+    display: block;
+  }
+  #video-file, #profile-pic-input {
+    display: none;
+  }
+  #video-file-label, #profile-pic-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+  }
+  #video-file-label:hover, #profile-pic-label:hover {
+    background-color: #45a049;
+  }
+  #video-file-name, #profile-pic-name {
+    margin-left: 10px;
+    font-style: italic;
+  }
+  #profile-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  #profile-pic {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 20px;
+  }
+  #username-display {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  #monetization-section {
+    text-align: center;
+  }
+  #monetization-toggle {
+    background-color: #4CAF50;
+    margin-top: 10px;
+  }
+  #monetization-toggle:hover {
+    background-color: #45a049;
+  }
+  #monetization-status {
+    font-weight: bold;
+    margin-top: 10px;
+  }
+  #monetization-requirements {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+  <div id="app">
+    <h1>YouTuber Simulator - The Grind to Viral</h1>
+    <div id="profile-section">
+      <img id="profile-pic" src="https://via.placeholder.com/100" alt="Profile Picture">
+      <div>
+        <div id="username-display">YourUsername</div>
+        <input type="text" id="username-input" placeholder="Change username">
+        <label for="profile-pic-input" id="profile-pic-label">Change Profile Picture</label>
+        <input type="file" id="profile-pic-input" accept="image/*">
+        <span id="profile-pic-name"></span>
+        <button onclick="updateProfile()">Update Profile</button>
+      </div>
+    </div>
+    <div id="upload-section">
+      <input type="text" id="video-title" placeholder="Enter your epic video title">
+      <label for="video-file" id="video-file-label">Choose Video File</label>
+      <input type="file" id="video-file" accept="video/*">
+      <span id="video-file-name"></span>
+      <button onclick="uploadVideo()">Upload Video</button>
+    </div>
+    <div id="stats-section">
+      <div class="stat-item">
+        <div class="stat-value" id="subscriber-count">0</div>
+        <div class="stat-label">Subscribers</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="total-views">0</div>
+        <div class="stat-label">Total Views</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="video-count">0</div>
+        <div class="stat-label">Videos</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-value" id="total-earnings">$0.00</div>
+        <div class="stat-label">Total Earnings</div>
+      </div>
+    </div>
+    <div id="monetization-section">
+      <h2>Monetization</h2>
+      <div id="monetization-status">Monetization is currently OFF</div>
+      <div id="monetization-requirements">Requirements: 10K views and 1K subscribers</div>
+      <button id="monetization-toggle" onclick="toggleMonetization()" disabled>Enable Monetization</button>
+    </div>
+    <h2>Your Videos</h2>
+    <ul id="video-list"></ul>
+  </div>
+
+  <div id="videoModal" class="modal">
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <video id="video-preview" controls>
+        Your browser does not support the video tag.
+      </video>
+      <div class="modal-stats">
+        <div class="modal-stat">
+          <div class="modal-stat-value" id="modalViews"></div>
+          <div class="modal-stat-label">Views</div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-value" id="modalLikes"></div>
+          <div class="modal-stat-label">Likes</div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-value" id="modalComments"></div>
+          <div class="modal-stat-label">Comments</div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-value" id="modalSubs"></div>
+          <div class="modal-stat-label">New Subscribers</div>
+        </div>
+        <div class="modal-stat">
+          <div class="modal-stat-value" id="modalEarnings"></div>
+          <div class="modal-stat-label">Earnings</div>
+        </div>
+      </div>
+      <div class="comment-section" id="commentSection"></div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chance/1.1.8/chance.min.js"></script>
+  <script>
+    const chance = new Chance();
+    let subscribers = 0;
+    let totalViews = 0;
+    let totalEarnings = 0;
+    const videos = [];
+    let currentModalVideo = null;
+    let username = "YourUsername";
+    let isMonetized = false;
+    const MONETIZATION_VIEW_REQUIREMENT = 10000;
+    const MONETIZATION_SUB_REQUIREMENT = 1000;
+
+    document.getElementById('video-file').addEventListener('change', function(event) {
+      const fileName = event.target.files[0].name;
+      document.getElementById('video-file-name').textContent = fileName;
+    });
+
+    document.getElementById('profile-pic-input').addEventListener('change', function(event) {
+      const fileName = event.target.files[0].name;
+      document.getElementById('profile-pic-name').textContent = fileName;
+    });
+
+    function updateProfile() {
+      const usernameInput = document.getElementById('username-input');
+      const profilePicInput = document.getElementById('profile-pic-input');
+
+      if (usernameInput.value.trim() !== '') {
+        username = usernameInput.value.trim();
+        document.getElementById('username-display').textContent = username;
+        usernameInput.value = '';
+      }
+
+      if (profilePicInput.files.length > 0) {
+        const file = profilePicInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+          document.getElementById('profile-pic').src = e.target.result;
+        }
+
+        reader.readAsDataURL(file);
+        document.getElementById('profile-pic-name').textContent = '';
+        profilePicInput.value = '';
+      }
+    }
+
+    function uploadVideo() {
+      const title = document.getElementById('video-title').value;
+      const videoFile = document.getElementById('video-file').files[0];
+      
+      if (title.trim() === '') {
+        alert('Please enter a video title');
+        return;
+      }
+
+      if (!videoFile) {
+        alert('Please select a video file');
+        return;
+      }
+
+      const video = {
+        title: title,
+        views: 0,
+        likes: 0,
+        comments: [],
+        viralFactor: 0,
+        timestamp: Date.now(),
+        newSubscribers: 0,
+        videoUrl: URL.createObjectURL(videoFile),
+        earnings: 0
+      };
+
+      videos.unshift(video);
+      updateVideoList();
+      updateStats();
+      document.getElementById('video-title').value = '';
+      document.getElementById('video-file').value = '';
+      document.getElementById('video-file-name').textContent = '';
+
+      // Simulate engagement over time
+      simulateEngagement(video);
+    }
+
+    function updateVideoList() {
+      const videoList = document.getElementById('video-list');
+      videoList.innerHTML = '';
+
+      videos.forEach((video, index) => {
+        const li = document.createElement('li');
+        li.className = 'video-item' + (index === 0 ? ' new-video' : '');
+        li.innerHTML = `
+          <div class="video-title">${video.title}</div>
+          <div class="video-stats">
+            <span>👁️ ${formatNumber(video.views)}</span>
+            <span>👍 ${formatNumber(video.likes)}</span>
+            <span>💬 ${formatNumber(video.comments.length)}</span>
+            <span>🔔 +${formatNumber(video.newSubscribers)}</span>
+            <span>💰 $${video.earnings.toFixed(2)}</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress" style="width: ${Math.min(video.viralFactor * 100, 100)}%"></div>
+          </div>
+        `;
+        li.onclick = () => openVideoModal(video);
+        videoList.appendChild(li);
+      });
+    }
+
+    function simulateEngagement(video) {
+      const intervalId = setInterval(() => {
+        const subscriberBoost = 1 + (subscribers / 1000);
+        const newViews = Math.floor(
+          chance.integer({ min: 1, max: 10 }) * (1 + video.viralFactor * 10) * subscriberBoost
+        );
+        video.views += newViews;
+        totalViews += newViews;
+
+        video.likes += Math.floor(newViews * chance.floating({ min: 0.05, max: 0.2 }));
+        
+        if (chance.bool({ likelihood: 20 * (1 + video.viralFactor) })) {
+          video.comments.push(generateComment());
+        }
+
+        video.viralFactor += chance.floating({ min: 0, max: 0.01 }) * (1 + video.viralFactor);
+        video.viralFactor = Math.min(video.viralFactor, 1);
+
+        const newSubscribers = Math.floor(newViews * chance.floating({ min: 0.01, max: 0.05 }));
+        subscribers += newSubscribers;
+        video.newSubscribers += newSubscribers;
+
+        if (isMonetized) {
+          const newEarnings = newViews * 0.001 * (1 + video.viralFactor);
+          video.earnings += newEarnings;
+          totalEarnings += newEarnings;
+        }
+
+        updateStats();
+        checkMonetizationEligibility();
+
+        if (chance.bool({ likelihood: 1 }) || video.viralFactor >= 1) {
+          clearInterval(intervalId);
+        }
+
+        if (currentModalVideo === video) {
+          updateModalContent(video);
+        }
+      }, 1000);
+    }
+
+    function generateComment() {
+      const positiveComments = [
+        "Great video!",
+        "Keep up the good work",
+        "Subscribed!",
+        "Can you do a video about...",
+        "Nice content",
+        "Thumbs up!",
+        "This is awesome",
+        "I learned a lot",
+        "Looking forward to more videos",
+        "This is going viral!",
+        "How did I find this gem?",
+        "Underrated content",
+        "Algorithm brought me here",
+        "Share this everyone!"
+      ];
+
+      const hateComments = [
+        "This is terrible",
+        "Unsubscribed",
+        "Waste of time",
+        "Do you even know what you're talking about?",
+        "Cringe content",
+        "You should quit YouTube",
+        "Disliked and reported",
+        "Worst video I've seen all day",
+        "How does this have any views?",
+        "My grandma makes better videos"
+      ];
+
+      const isHateComment = chance.bool({ likelihood: 15 });
+      const comment = isHateComment ? chance.pickone(hateComments) : chance.pickone(positiveComments);
+      return { text: comment, isHate: isHateComment };
+    }
+
+    function updateStats() {
+      document.getElementById('subscriber-count').textContent = formatNumber(subscribers);
+      document.getElementById('total-views').textContent = formatNumber(totalViews);
+      document.getElementById('video-count').textContent = formatNumber(videos.length);
+      document.getElementById('total-earnings').textContent = '$' + totalEarnings.toFixed(2);
+      updateVideoList();
+    }
+
+    function formatNumber(num) {
+      if (num >= 1000000) {
+        return (num / 1000000).toFixed(1) + 'M';
+      } else if (num >= 1000) {
+        return (num / 1000).toFixed(1) + 'K';
+      }
+      return num.toString();
+    }
+
+    function openVideoModal(video) {
+      currentModalVideo = video;
+      updateModalContent(video);
+      document.getElementById('videoModal').style.display = 'block';
+      const videoPreview = document.getElementById('video-preview');
+      videoPreview.src = video.videoUrl;
+    }
+
+    function updateModalContent(video) {
+      const modalTitle = document.getElementById('modalTitle');
+      const modalViews = document.getElementById('modalViews');
+      const modalLikes = document.getElementById('modalLikes');
+      const modalComments = document.getElementById('modalComments');
+      const modalSubs = document.getElementById('modalSubs');
+      const modalEarnings = document.getElementById('modalEarnings');
+      const commentSection = document.getElementById('commentSection');
+
+      modalTitle.textContent = video.title;
+      modalViews.textContent = formatNumber(video.views);
+      modalLikes.textContent = formatNumber(video.likes);
+      modalComments.textContent = formatNumber(video.comments.length);
+      modalSubs.textContent = formatNumber(video.newSubscribers);
+      modalEarnings.textContent = '$' + video.earnings.toFixed(2);
+
+      commentSection.innerHTML = '';
+      video.comments.forEach(comment => {
+        const commentElement = document.createElement('div');
+        commentElement.className = 'comment' + (comment.isHate ? ' hate' : '');
+        commentElement.textContent = comment.text;
+        commentSection.appendChild(commentElement);
+      });
+    }
+
+    function checkMonetizationEligibility() {
+      const monetizationToggle = document.getElementById('monetization-toggle');
+      const monetizationStatus = document.getElementById('monetization-status');
+      const isEligible = totalViews >= MONETIZATION_VIEW_REQUIREMENT && subscribers >= MONETIZATION_SUB_REQUIREMENT;
+
+      if (isEligible && !isMonetized) {
+        monetizationToggle.disabled = false;
+        monetizationStatus.textContent = 'You are now eligible for monetization!';
+      } else if (!isEligible) {
+        monetizationToggle.disabled = true;
+        monetizationStatus.textContent = `Monetization requirements not met yet. Keep grinding!`;
+      }
+    }
+
+    function toggleMonetization() {
+      if (totalViews < MONETIZATION_VIEW_REQUIREMENT || subscribers < MONETIZATION_SUB_REQUIREMENT) {
+        alert('You do not meet the requirements for monetization yet. Keep creating content!');
+        return;
+      }
+
+      isMonetized = !isMonetized;
+      const monetizationStatus = document.getElementById('monetization-status');
+      const monetizationToggle = document.getElementById('monetization-toggle');
+
+      if (isMonetized) {
+        monetizationStatus.textContent = 'Monetization is currently ON';
+        monetizationToggle.textContent = 'Disable Monetization';
+        monetizationToggle.style.backgroundColor = '#ff0000';
+      } else {
+        monetizationStatus.textContent = 'Monetization is currently OFF';
+        monetizationToggle.textContent = 'Enable Monetization';
+        monetizationToggle.style.backgroundColor = '#4CAF50';
+      }
+    }
+
+    // Close modal when clicking on <span> (x)
+    document.getElementsByClassName('close')[0].onclick = function() {
+      document.getElementById('videoModal').style.display = 'none';
+      currentModalVideo = null;
+      document.getElementById('video-preview').src = '';
+    }
+
+    // Close modal when clicking outside of it
+    window.onclick = function(event) {
+      const modal = document.getElementById('videoModal');
+      if (event.target == modal) {
+        modal.style.display = 'none';
+        currentModalVideo = null;
+        document.getElementById('video-preview').src = '';
+      }
+    }
+
+    // Update modal content every second if it's open
+    setInterval(() => {
+      if (currentModalVideo) {
+        updateModalContent(currentModalVideo);
+      }
+    }, 1000);
+
+    // Initial check for monetization eligibility
+    checkMonetizationEligibility();
+  </script>
+</body>
+</html>
